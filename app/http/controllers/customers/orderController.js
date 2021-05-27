@@ -17,8 +17,8 @@ function orderController () {
                 address
             })
             order.save().then(result => {
-                // Order.populate(result, { path: 'customerId' }, (err, placedOrder) => {
-                    // req.flash('success', 'Order placed successfully')
+                Order.populate(result, { path: 'customerId' }, (err, placedOrder) => {
+                    req.flash('success', 'Order placed successfully')
 
                     // Stripe payment
                     // if(paymentType === 'card') {
@@ -32,8 +32,10 @@ function orderController () {
                     //         placedOrder.paymentType = paymentType
                     //         placedOrder.save().then((ord) => {
                     //             // Emit
-                    //             const eventEmitter = req.app.get('eventEmitter')
-                    //             eventEmitter.emit('orderPlaced', ord)
+                                delete req.session.cart
+                                const eventEmitter = req.app.get('eventEmitter')
+                                eventEmitter.emit('orderPlaced', placedOrder)
+                                return res.redirect('/customer/orders')
                     //             delete req.session.cart
                     //             return res.json({ message : 'Payment successful, Order placed successfully' });
                     //         }).catch((err) => {
@@ -45,10 +47,10 @@ function orderController () {
                     //         return res.json({ message : 'OrderPlaced but payment failed, You can pay at delivery time' });
                     //     })
                     // } else {
-                        delete req.session.cart
-                        return res.json({ message : 'Order placed succesfully' });
+                        // delete req.session.cart
+                        // return res.json({ message : 'Order placed succesfully' });
                     // }
-                // })
+                })
             }).catch(err => {
                 return res.status(500).json({ message : 'Something went wrong' });
             })
@@ -60,14 +62,14 @@ function orderController () {
             res.header('Cache-Control', 'no-store')
             res.render('customers/orders', { orders: orders, moment: moment })
         },
-        // async show(req, res) {
-        //     const order = await Order.findById(req.params.id)
-        //     // Authorize user
-        //     if(req.user._id.toString() === order.customerId.toString()) {
-        //         return res.render('customers/singleOrder', { order })
-        //     }
-        //     return  res.redirect('/')
-        // }
+        async show(req, res) {
+            const order = await Order.findById(req.params.id)
+            // Authorize user
+            if(req.user._id.toString() === order.customerId.toString()) {
+                return res.render('customers/singleOrder', { order })
+            }
+            return  res.redirect('/')
+        }
     }
 }
 
