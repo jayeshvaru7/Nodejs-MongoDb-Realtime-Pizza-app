@@ -37,7 +37,7 @@ app.set('eventEmitter', eventEmitter)
 app.use(session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    store: MongoDbStore .create({
+    store: MongoDbStore.create({
         mongoUrl: process.env.MONGO_CONNECTION_URL,
         collectionName: 'sessions'
     }),
