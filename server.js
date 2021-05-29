@@ -22,9 +22,12 @@ mongoose.connect(process.env.MONGO_CONNECTION_URL, { useNewUrlParser: true, useC
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('Database connected...');
-}).catch(err => {
-    console.log('Connection failed...')
-});
+}).on('error', (error) => {
+    console.warn('Warning', error);
+   });
+// .catch(err => {
+    // console.log('Connection failed...')
+// });
 
 // Event emitter
 const eventEmitter = new Emitter()
