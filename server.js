@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('express-flash')
-const MongoDbStore  = require('connect-mongo').default;
+const MongoDbStore  = require('connect-mongo');
 const passport = require('passport')
 const Emitter = require('events')
 
